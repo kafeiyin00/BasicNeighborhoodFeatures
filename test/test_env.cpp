@@ -23,6 +23,8 @@ int main(){
         return (-1);
     }
 
+    LOG(INFO) << "loaded points :" <<cloud->size();
+
     pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> octree (5.0);
     octree.setInputCloud(cloud);
     octree.addPointsFromInputCloud();
@@ -37,8 +39,9 @@ int main(){
             std::vector<int> indices;
             it.getLeafContainer().getPointIndices(indices);
 
-            LOG(INFO) << "point size:" << indices.size();
-            if(indices.size() < 100){
+            //LOG(INFO) << "point size:" << indices.size();
+            if(indices.size() < 20){
+                it++;
                 continue;
             }
 
@@ -52,6 +55,10 @@ int main(){
 
             BNF::PCAAnalyzer pcaAnalyzer(tmp_cloud);
             pcaAnalyzer.estimateFeature();
+
+            LOG(INFO) << "planar feature: " << pcaAnalyzer.getPCAFeature().planar;
+
+            //TODO: Weitong: add 3d debugger for the pcafeature
         }
         it++;
     }

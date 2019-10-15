@@ -37,8 +37,6 @@ namespace BNF{
         double linear_2;
         double planar_2;
         double spherical_2;
-        pcl::PointXYZ pt;
-        size_t ptId;
         size_t ptNum;
     };
 
@@ -50,12 +48,20 @@ namespace BNF{
         }
 
         void estimateFeature();
+
+        const PCAFeature getPCAFeature();
+
     private:
         const pcl::PointCloud<pcl::PointXYZ>::Ptr &_cloud;
         PCAFeature _pcaFeature;
     };
 
     inline void PCAAnalyzer::estimateFeature() {
+
+        CHECK(_cloud->size() > 3) << "selected points is fewer than 3";
+
+        _pcaFeature.ptNum = _cloud->size();
+
         Eigen::MatrixXf raw_points(3,_cloud->size());
         Eigen::Vector3f average(0,0,0);
         for (int i = 0; i < _cloud->size(); ++i) {
@@ -71,13 +77,37 @@ namespace BNF{
         Eigen::Matrix3f cov_matrix = raw_points*raw_points.transpose();
         Eigen::SelfAdjointEigenSolver<Eigen::Matrix3f> eig; // default constructor
         eig.computeDirect(cov_matrix); // works for 2x2 and 3x3 matrices, does not require loops
-        Eigen::Vector3f D = eig.eigenvalues();
+        Eigen::Vector3f eigenValues = eig.eigenvalues();
+        Eigen::Matrix3f eigenVectors = eig.eigenvectors();
 
-        Eigen::Vector3f sD = Eigen::Vector3f(sqrt(abs(D(0))), sqrt(abs(D(1))), sqrt(abs(D(2))));
-        float line_feature = (sD(2) - sD(1))/ sD(2);
+        _pcaFeature.vectors.principalDirection = eigenVectors.col(2);
+        _pcaFeature.vectors.middleDirection = eigenVectors.col(1);
+        _pcaFeature.vectors.normalDirection = eigenVectors.col(0);
 
-        _pcaFeature.linear = line_feature;
+        _pcaFeature.values.lamada1 = eigenValues(2);
+        _pcaFeature.values.lamada2 = eigenValues(1);
+        _pcaFeature.values.lamada3 = eigenValues(0);
 
+        if ((_pcaFeature.values.lamada1 + _pcaFeature.values.lamada2 + _pcaFeature.values.lamada3) < 1e-6)
+        {
+            _pcaFeature.curvature = 0;
+        }
+        else
+        {
+            _pcaFeature.curvature = _pcaFeature.values.lamada3 / (_pcaFeature.values.lamada1 + _pcaFeature.values.lamada2 + _pcaFeature.values.lamada3);
+        }
+
+        _pcaFeature.linear = (sqrt(_pcaFeature.values.lamada1) - sqrt(_pcaFeature.values.lamada2)) / sqrt(_pcaFeature.values.lamada1);
+        _pcaFeature.planar = (sqrt(_pcaFeature.values.lamada2) - sqrt(_pcaFeature.values.lamada3)) / sqrt(_pcaFeature.values.lamada1);
+        _pcaFeature.spherical = sqrt(_pcaFeature.values.lamada3) / sqrt(_pcaFeature.values.lamada1);
+        _pcaFeature.linear_2 = ((_pcaFeature.values.lamada1) - (_pcaFeature.values.lamada2)) / (_pcaFeature.values.lamada1);
+        _pcaFeature.planar_2 = ((_pcaFeature.values.lamada2) - (_pcaFeature.values.lamada3)) / (_pcaFeature.values.lamada1);
+        _pcaFeature.spherical_2 = (_pcaFeature.values.lamada3) / (_pcaFeature.values.lamada1);
+
+    }
+
+    inline const PCAFeature PCAAnalyzer::getPCAFeature() {
+        return _pcaFeature;
     }
 }
 
