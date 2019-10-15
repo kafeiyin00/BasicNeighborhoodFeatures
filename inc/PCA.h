@@ -8,6 +8,7 @@
 #include <Eigen/Dense>
 #include <pcl/point_types.h>
 #include <pcl/point_cloud.h>
+#include <glog/logging.h>
 
 
 namespace BNF{
@@ -38,6 +39,9 @@ namespace BNF{
         double planar_2;
         double spherical_2;
         size_t ptNum;
+        bool valid;
+        pcl::PointXYZ pt;
+        int idx;
     };
 
     class PCAAnalyzer{
@@ -79,6 +83,8 @@ namespace BNF{
         eig.computeDirect(cov_matrix); // works for 2x2 and 3x3 matrices, does not require loops
         Eigen::Vector3f eigenValues = eig.eigenvalues();
         Eigen::Matrix3f eigenVectors = eig.eigenvectors();
+
+        _pcaFeature.valid = true;
 
         _pcaFeature.vectors.principalDirection = eigenVectors.col(2);
         _pcaFeature.vectors.middleDirection = eigenVectors.col(1);

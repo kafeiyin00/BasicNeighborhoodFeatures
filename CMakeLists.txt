@@ -38,4 +38,7 @@ configure_file (
 include_directories(${PROJECT_BINARY_DIR})
 include_directories(inc)
 
+add_library(libbnf
+        src/3DFeatureDetection.cpp)
+
 add_subdirectory(test)
