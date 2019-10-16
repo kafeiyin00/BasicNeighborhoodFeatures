@@ -28,6 +28,8 @@ if (CMAKE_SYSTEM_NAME MATCHES "Linux")
     include_directories(${Pangolin_INCLUDE_DIRS})
     MESSAGE(STATUS "current platform: Linux ")
 elseif(CMAKE_SYSTEM_NAME MATCHES "Windows")
+    find_package(Pangolin REQUIRED)
+    include_directories(${Pangolin_INCLUDE_DIRS})
 endif()
 
 set(DATA_FOLDER_PATH "\"${PROJECT_SOURCE_DIR}/data/\"")
