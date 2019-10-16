@@ -10,6 +10,8 @@
 
 #include <pcl/octree/octree_search.h>
 
+#include "PangoVis.h"
+
 int main(){
     LOG(INFO)<<"#-- test env";
 
@@ -24,6 +26,8 @@ int main(){
     }
 
     LOG(INFO) << "loaded points :" <<cloud->size();
+
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloudrgb(new pcl::PointCloud<pcl::PointXYZRGB>());
 
     pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> octree (5.0);
     octree.setInputCloud(cloud);
@@ -56,14 +60,26 @@ int main(){
             BNF::PCAAnalyzer pcaAnalyzer(tmp_cloud);
             pcaAnalyzer.estimateFeature();
 
-            LOG(INFO) << "planar feature: " << pcaAnalyzer.getPCAFeature().planar;
+//            LOG(INFO) << "planar feature: " << pcaAnalyzer.getPCAFeature().planar;
 
             //TODO: Weitong: add 3d debugger for the pcafeature
+            for (int j = 0; j < indices.size(); ++j) {
+                pcl::PointXYZRGB pt;
+                pt.x = cloud->points[indices[j]].x;
+                pt.y = cloud->points[indices[j]].y;
+                pt.z = cloud->points[indices[j]].z;
+                pt.g= int(255*pcaAnalyzer.getPCAFeature().planar);
+                pt.r= 0;
+                pt.b= 0;
+                cloudrgb->push_back(pt);
+            }
         }
         it++;
     }
 
-
+    //可视化test
+    PangoVis Vis;
+    Vis.process(cloudrgb);
 
     //BNF::PCAAnalyzer pcaAnalyzer(cloud);
 

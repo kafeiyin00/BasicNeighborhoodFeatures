@@ -5,4 +5,6 @@ add_executable(test_env
 target_link_libraries(test_env
         glog
         libbnf
-        ${PCL_LIBRARIES})
+        libPangoVis
+        ${PCL_LIBRARIES}
+        ${Pangolin_LIBRARIES})
