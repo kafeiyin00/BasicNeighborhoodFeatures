@@ -1,5 +1,5 @@
 //
-// Created by 86384 on 2019/10/14.
+// Created by Jianping on 2019/10/14.
 //
 
 
@@ -82,7 +82,7 @@ void TrDimFeatureDetector::nonMaximaSuppression(std::vector<PCAFeature> &pcaFeat
 
 }
 
-bool TrDimFeatureDetector::detectionBasedOnCurvature(
+void TrDimFeatureDetector::detectionBasedOnCurvature(
         const pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
         const pcl::octree::OctreePointCloudSearch<pcl::PointXYZ>::Ptr octree,
         std::vector<int>& indexes) {

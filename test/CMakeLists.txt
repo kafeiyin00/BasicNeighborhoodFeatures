@@ -8,3 +8,12 @@ target_link_libraries(test_env
         libPangoVis
         ${PCL_LIBRARIES}
         ${Pangolin_LIBRARIES})
+
+
+add_executable(test_featureDetection
+        test_featureDetection.cpp)
+target_link_libraries(test_featureDetection
+        glog
+        libbnf
+        ${PCL_LIBRARIES})
+

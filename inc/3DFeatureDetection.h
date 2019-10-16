@@ -1,5 +1,5 @@
 //
-// Created by 86384 on 2019/10/14.
+// Created by Jianping on 2019/10/14.
 //
 
 #ifndef BASICNEIGHBORHOODFEATURES_3DFEATUREDETECTION_H
@@ -29,7 +29,7 @@ namespace BNF{
 
         }
 
-        bool detectionBasedOnCurvature(
+        void detectionBasedOnCurvature(
                 const pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                 const pcl::octree::OctreePointCloudSearch<pcl::PointXYZ>::Ptr octree,
                 std::vector<int>& indexes);

@@ -41,7 +41,8 @@ include_directories(inc)
 include_directories(debugger)
 
 add_library(libbnf
-        src/3DFeatureDetection.cpp)
+        src/3DFeatureDetection.cpp
+        src/BSCDescription.cpp)
 
 add_subdirectory(test)
 add_subdirectory(debugger)
