@@ -13,7 +13,7 @@ class PangoVis
 {
 public:
     PangoVis();
-    bool process(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloudrgb);
+    bool process(std::vector<pcl::PointCloud<pcl::PointXYZRGB>::Ptr> cloudrgbvector, int pointsize[] );
 
 };
 #endif //BASICNEIGHBORHOODFEATURES_PANGOVIS_H

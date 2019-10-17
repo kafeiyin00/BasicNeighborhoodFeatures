@@ -48,7 +48,7 @@ namespace BNF{
     public:
         PCAAnalyzer(const pcl::PointCloud<pcl::PointXYZ>::Ptr cloud):
         _cloud(cloud){
-            LOG(INFO) << "PCA input point size :" << _cloud->points.size();
+//            LOG(INFO) << "PCA input point size :" << _cloud->points.size();
         }
 
         void estimateFeature();

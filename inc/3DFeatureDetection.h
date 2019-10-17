@@ -8,7 +8,7 @@
 #include <pcl/point_types.h>
 #include <pcl/point_cloud.h>
 
-#include <pcl/octree/octree_search.h>
+#include <pcl/kdtree/kdtree_flann.h>
 #include "PCA.h"
 
 namespace BNF{
@@ -31,7 +31,7 @@ namespace BNF{
 
         void detectionBasedOnCurvature(
                 const pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
-                const pcl::octree::OctreePointCloudSearch<pcl::PointXYZ>::Ptr octree,
+                const pcl::KdTreeFLANN<pcl::PointXYZ>::Ptr kdtree,
                 std::vector<int>& indexes);
 
     private:

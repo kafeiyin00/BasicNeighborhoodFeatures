@@ -9,7 +9,7 @@ PangoVis::PangoVis()
 }
 
 
-bool  PangoVis::process(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloudrgb)
+bool  PangoVis::process(std::vector<pcl::PointCloud<pcl::PointXYZRGB>::Ptr> cloudrgbvector, int pointsize[])
 {
     //可视化
     pangolin::CreateWindowAndBind("Main",640,480);
@@ -17,7 +17,7 @@ bool  PangoVis::process(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloudrgb)
 
     // 点云重心
     Eigen::Vector4f centroid;
-    pcl::compute3DCentroid(*cloudrgb, centroid);
+    pcl::compute3DCentroid(*cloudrgbvector[0], centroid);
 
     // Define Projection and initial ModelView matrix
     pangolin::OpenGlRenderState s_cam(
@@ -37,8 +37,10 @@ bool  PangoVis::process(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloudrgb)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         d_cam.Activate(s_cam);
 
-        PangoCloud cloudrgb1(cloudrgb.get());
-        cloudrgb1.drawPoints();
+        for (int i = 0; i < cloudrgbvector.size() ; ++i) {
+            PangoCloud cloudrgb(cloudrgbvector[i].get());
+            cloudrgb.drawPoints(pointsize[i]);
+        }
 
         // Swap frames and Process Events
         pangolin::FinishFrame();

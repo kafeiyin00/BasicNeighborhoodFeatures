@@ -45,6 +45,7 @@ void TrDimFeatureDetector::nonMaximaSuppression(std::vector<PCAFeature> &pcaFeat
     /*建立UnSegment以及UnSegment的迭代器,存储未分割的点号;*/
     std::set<size_t, std::less<size_t>> unVisitedPtId;
     std::set<size_t, std::less<size_t>>::iterator iterUnseg;
+    LOG(INFO) << "stable points size"  << pcaFeatures_stage1.size();
     for (size_t i = 0; i < pcaFeatures_stage1.size(); ++i)
     {
         unVisitedPtId.insert(i);
@@ -84,7 +85,7 @@ void TrDimFeatureDetector::nonMaximaSuppression(std::vector<PCAFeature> &pcaFeat
 
 void TrDimFeatureDetector::detectionBasedOnCurvature(
         const pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
-        const pcl::octree::OctreePointCloudSearch<pcl::PointXYZ>::Ptr octree,
+        const pcl::KdTreeFLANN<pcl::PointXYZ>::Ptr kdtree,
         std::vector<int>& indexes) {
 
     std::vector<BNF::PCAFeature> pcaFeatures;
@@ -96,7 +97,7 @@ void TrDimFeatureDetector::detectionBasedOnCurvature(
         std::vector<int> indices; //Vector
         std::vector<float> distances;    //Vector
 
-        octree->radiusSearch(i, _option.radiusFeatureCalculation, indices, distances);  //octree ָ
+        kdtree->radiusSearch(i, _option.radiusFeatureCalculation, indices, distances);
 
         if(indices.size() < 5){
             pcaFeatures[i].valid = false;
@@ -118,6 +119,7 @@ void TrDimFeatureDetector::detectionBasedOnCurvature(
         pcaFeatures[i].pt = cloud->points[i];
         pcaFeatures[i].idx = i;
     }
+    LOG(INFO)<<"PCA calculate done" ;
 
     std::vector<BNF::PCAFeature> pcaFeatures_stage1;
     pruneUnstablePoints(pcaFeatures,pcaFeatures_stage1);

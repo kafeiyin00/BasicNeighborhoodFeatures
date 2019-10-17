@@ -29,7 +29,7 @@ int main(){
 
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloudrgb(new pcl::PointCloud<pcl::PointXYZRGB>());
 
-    pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> octree (5.0);
+    pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> octree (2.0);
     octree.setInputCloud(cloud);
     octree.addPointsFromInputCloud();
 
@@ -76,10 +76,12 @@ int main(){
         }
         it++;
     }
-
+    int pointsize[1] = {1};
+    std::vector<pcl::PointCloud<pcl::PointXYZRGB>::Ptr> cloudrgbvector;
+    cloudrgbvector.push_back(cloudrgb);
     //可视化test
     PangoVis Vis;
-    Vis.process(cloudrgb);
+    Vis.process(cloudrgbvector,pointsize);
 
     //BNF::PCAAnalyzer pcaAnalyzer(cloud);
 

@@ -3,17 +3,18 @@
 //
 
 #include "3DFeatureDetection.h"
+#include "PangoVis.h"
 
 #include <glog/logging.h>
 #include "Config.h"
 
 #include <pcl/io/ply_io.h>
 
-#include <pcl/octree/octree_search.h>
+#include <pcl/kdtree/kdtree_flann.h>
 
 int main(){
     //load data
-    std::string testDataFilename = DATA_FOLDER_PATH"pts.ply";
+    std::string testDataFilename = DATA_FOLDER_PATH"pts_0.15.ply";
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
 
     if (pcl::io::loadPLYFile<pcl::PointXYZ>(testDataFilename, *cloud) == -1) //* load the file
@@ -24,13 +25,11 @@ int main(){
 
     LOG(INFO) << "loaded points :" <<cloud->size();
 
-    pcl::octree::OctreePointCloudSearch<pcl::PointXYZ>::Ptr octree(
-            new pcl::octree::OctreePointCloudSearch<pcl::PointXYZ>(5.0));
-    octree->setInputCloud(cloud);
-    octree->addPointsFromInputCloud();
+    pcl::KdTreeFLANN<pcl::PointXYZ>::Ptr kdtree(new pcl::KdTreeFLANN<pcl::PointXYZ>());  //建立kdtree对象
+    kdtree->setInputCloud(cloud);
     
     BNF::featureDetectionOption option;
-    option.ratioMax = 0.1;
+    option.ratioMax = 0.4;
     option.radiusFeatureCalculation = 3;
     option.minPtNum = 50;
     option.radiusNonMax = 3;
@@ -38,7 +37,36 @@ int main(){
     BNF::TrDimFeatureDetector featureDetector(option);
 
     std::vector<int> indexes;
-    featureDetector.detectionBasedOnCurvature(cloud,octree,indexes);
+    featureDetector.detectionBasedOnCurvature(cloud,kdtree,indexes);
 
     //TODO: Weitong: add 3d debugger for the feature detection and parameter setting
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloudrgb(new pcl::PointCloud<pcl::PointXYZRGB>());
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr keypointrgb(new pcl::PointCloud<pcl::PointXYZRGB>());
+    for (int k = 0; k < cloud->points.size() ; ++k) {
+        pcl::PointXYZRGB pt;
+        pt.x = cloud->points[k].x;
+        pt.y = cloud->points[k].y;
+        pt.z = cloud->points[k].z;
+        pt.r= 0;
+        pt.g= 255;
+        pt.b= 0;
+        cloudrgb->push_back(pt);
+    }
+    for (int j = 0; j < indexes.size(); ++j) {
+        pcl::PointXYZRGB pt;
+        pt.x = cloud->points[indexes[j]].x;
+        pt.y = cloud->points[indexes[j]].y;
+        pt.z = cloud->points[indexes[j]].z;
+        pt.r= 0;
+        pt.g= 0;
+        pt.b= 255;
+        keypointrgb->push_back(pt);
+    }
+    int pointsize[2] = {1,7};
+    std::vector<pcl::PointCloud<pcl::PointXYZRGB>::Ptr> cloudrgbvector;
+    cloudrgbvector.push_back(cloudrgb);
+    cloudrgbvector.push_back(keypointrgb);
+    PangoVis Vis;
+    Vis.process(cloudrgbvector,pointsize);
+
 }

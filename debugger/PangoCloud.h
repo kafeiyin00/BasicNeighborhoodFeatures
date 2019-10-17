@@ -65,8 +65,9 @@ class PangoCloud
             glDeleteBuffers(1, &vbo);
         }
 
-        void drawPoints()
+        void drawPoints(int pointsize)
         {
+            glPointSize(pointsize);
             glBindBuffer(GL_ARRAY_BUFFER, vbo);
             glVertexPointer(3, GL_FLOAT, stride, 0);
             glColorPointer(3, GL_UNSIGNED_BYTE, stride, (void *)(sizeof(float) * offset));

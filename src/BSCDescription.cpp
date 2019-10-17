@@ -4,8 +4,10 @@
 
 #include "BSCDescription.h"
 #include <glog/logging.h>
-#include <pcl\registration\correspondence_rejection.h>
-#include <pcl\registration\transformation_estimation_svd.h>
+//#include <pcl\registration\correspondence_rejection.h>
+//#include <pcl\registration\transformation_estimation_svd.h>
+#include <pcl/registration/transformation_estimation_svd.h>
+#include <pcl/registration/correspondence_rejection.h>
 
 using namespace BNF;
 
@@ -431,8 +433,10 @@ void BNF::BSCDescriptor::constructCubicGrid(const pcl::PointCloud<pcl::PointXYZ>
             pt.x = (i + 0.5)*unit_side_length_ - extract_radius_;
             pt.y = (j + 0.5)*unit_side_length_ - extract_radius_;
             //搜索邻域内的点;
-            search_indices.swap(std::vector<int>());
-            distances.swap(std::vector<float>());
+            std::vector<int>().swap(search_indices);
+            std::vector<float>().swap(distances);
+//            search_indices.swap(std::vector<int>());
+//            distances.swap(std::vector<float>());
             tree.radiusSearch(pt, 1.5*unit_side_length_, search_indices, distances);
 
             if (distances.empty() != true)
@@ -824,7 +828,8 @@ bool BNF::BSCDescriptor::extractBinaryFeatureOfKeypoint(const pcl::PointCloud<pc
     features.push_back(feature);
 
     //计算完成清理grid和result_cloud 进行下一次计算
-    grid.swap(std::vector<GridVoxel>(gridFeatureDimension_));
+    std::vector<GridVoxel>().swap(grid);
+//    grid.swap(std::vector<GridVoxel>(gridFeatureDimension_));
     result_cloud->points.clear();
 
     /*Z轴不变,X轴和Y轴反向;*/
@@ -846,7 +851,8 @@ bool BNF::BSCDescriptor::extractBinaryFeatureOfKeypoint(const pcl::PointCloud<pc
     features.push_back(feature);
 
     //计算完成清理grid和result_cloud 进行下一次计算
-    grid.swap(std::vector<GridVoxel>(gridFeatureDimension_));
+    std::vector<GridVoxel>().swap(grid);
+//    grid.swap(std::vector<GridVoxel>(gridFeatureDimension_));
     result_cloud->points.clear();
 
     return true;
