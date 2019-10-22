@@ -15,8 +15,16 @@
 
     ![image](https://github.com/kafeiyin00/BasicNeighborhoodFeatures/blob/master/testimage/keypoint1.png)
 2.  option.ratioMax = 0.4;
-    option.radiusFeatureCalculation = 3;
+    optio   n.radiusFeatureCalculation = 3;
     option.minPtNum = 50;
     option.radiusNonMax = 3;
     
     ![image](https://github.com/kafeiyin00/BasicNeighborhoodFeatures/blob/master/testimage/keypoint2.png)
+    
+3. demPointcloud test
+   option.ratioMax = 0.9;
+   option.radiusFeatureCalculation = 10;
+   option.minPtNum = 20;
+   option.radiusNonMax = 10;
+   
+   ![image](https://github.com/kafeiyin00/BasicNeighborhoodFeatures/blob/master/testimage/keypoint3.png)

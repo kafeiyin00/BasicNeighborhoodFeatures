@@ -14,7 +14,7 @@
 
 int main(){
     //load data
-    std::string testDataFilename = DATA_FOLDER_PATH"pts_0.15.ply";
+    std::string testDataFilename = DATA_FOLDER_PATH"dempointcloud.ply";
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
 
     if (pcl::io::loadPLYFile<pcl::PointXYZ>(testDataFilename, *cloud) == -1) //* load the file
@@ -29,10 +29,10 @@ int main(){
     kdtree->setInputCloud(cloud);
     
     BNF::featureDetectionOption option;
-    option.ratioMax = 0.4;
-    option.radiusFeatureCalculation = 3;
-    option.minPtNum = 50;
-    option.radiusNonMax = 3;
+    option.ratioMax = 0.9;
+    option.radiusFeatureCalculation = 10;
+    option.minPtNum = 20;
+    option.radiusNonMax = 10;
 
     BNF::TrDimFeatureDetector featureDetector(option);
 
